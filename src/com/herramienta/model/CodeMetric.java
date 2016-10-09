@@ -5,18 +5,23 @@ public class CodeMetric extends BaseModel {
 	private String mValue;
 	
 	
-	// Getters and setters 
+	// Constructors 
+	public CodeMetric() {
+		this.mName = "";
+		this.mValue = "";
+	}
 	
-	public String getmName() {
+	// Getters and setters 
+	public String getName() {
 		return mName;
 	}
-	public void setmName(String mName) {
+	public void setName(String mName) {
 		this.mName = mName;
 	}
-	public String getmValue() {
+	public String getValue() {
 		return mValue;
 	}
-	public void setmValue(String mValue) {
+	public void setValue(String mValue) {
 		this.mValue = mValue;
 	}
 	

@@ -5,20 +5,23 @@ import com.herramienta.model.CodeMetric;
 public class CodeLinesNumberInspectionService extends CodeInspectionService {
 	
 	private int mNumberOfLines = 0;
+	
+	private CommentedLinesInspectionService commentedLinesInspectionService = new CommentedLinesInspectionService(); 
 
 	@Override
-	void analyzeLine(String codeLine) {
+	public void analyzeLine(String codeLine) {
 		// TODO Auto-generated method stub
 		this.mNumberOfLines++;
+		
 	}
 
 	@Override
-	CodeMetric getMetric() {
+	public CodeMetric getMetric() {
 		// TODO Auto-generated method stub
 		CodeMetric m = new CodeMetric();
-		m.setmName("Número de líneas");
-		m.setmValue(String.valueOf(mNumberOfLines));
-		return null;
+		m.setName("Número de líneas");
+		m.setValue(String.valueOf(mNumberOfLines));
+		return m;
 	}
 
 }

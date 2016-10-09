@@ -8,7 +8,15 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.omg.PortableServer.Servant;
+
 import com.herramienta.core.MiFiltroArchivo;
+import com.herramienta.model.CodeMetric;
+import com.herramienta.services.CodeInspectionService;
+import com.herramienta.services.CodeLinesNumberInspectionService;
+import com.herramienta.services.CommentedLinesInspectionService;
+import com.herramienta.services.CyclomaticComplexityInspectionService;
+import com.herramienta.services.HalsteadInspectionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +37,7 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		archivoAbierto = false;
 	}
 
-	private List<String> codigo;
-	private int complejidadCiclomatica = 0;
-	private int valorCC;
+	private List<CodeInspectionService> servicios;
 	private void initComponents() {
 
         fileChooser = new javax.swing.JFileChooser();
@@ -150,28 +156,35 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		}
 		
 		try
-		{/*
-			int cantif =0;
-			int cantwhile =0;
-			int cntcase =0;
-			int cantfor=0;*/
-			int cantLineas = 0;
+		{
+			
+			this.servicios = new ArrayList<CodeInspectionService>();
+			
+			// Agregamos todos los servicios que necesitamos para analizar el codigo.
+			// Cada vez que el programa pase por una linea, la enviará
+			// a todos los servicios que esten registrados.
+			// Los servicios entonces van a procesar esa linea y van a registrar
+			// los resultados en un objeto CodeMetric.
+			this.servicios.add(new CodeLinesNumberInspectionService());
+			this.servicios.add(new CommentedLinesInspectionService());
+			this.servicios.add(new CyclomaticComplexityInspectionService());
+			this.servicios.add(new HalsteadInspectionService());
 
-			this.complejidadCiclomatica = 0;
 			String line;
 			BufferedReader br = new BufferedReader(fr);
-			this.codigo= new ArrayList<String>();
 		    
 			while ((line = br.readLine()) != null) {
-		    	   cantLineas++;
-		    	   this.codigo.add(line);
-							
+		    	   for(CodeInspectionService servicio : this.servicios) {
+		    		   servicio.analyzeLine(line);
+		    	   }
 		       }
-		       this.procesar(codigo);
 			
-			
-			editorTextArea.setText("El archivo fuente tiene "+cantLineas+" lineas\n"+
-								   "Complejidad ciclomatica: "+this.valorCC+"\n");
+		       StringBuffer sb = new StringBuffer();
+		       for (CodeInspectionService servicio : servicios) {
+		    	   CodeMetric metrica = servicio.getMetric();
+		    	   sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
+		       }
+		       editorTextArea.setText(sb.toString());
 
 
 			fr.close();
@@ -192,39 +205,28 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		
     }//GEN-LAST:event_abrirMenuItemActionPerformed
 
-    private void salirMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_salirMenuItemActionPerformed
+    private CodeInspectionService CyclomaticComplexityInspectionService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private CodeInspectionService CommentedLinesInspectionService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private CodeInspectionService CodeLinesNumberInspectionService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private void salirMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_salirMenuItemActionPerformed
     {//GEN-HEADEREND:event_salirMenuItemActionPerformed
 		System.exit(0);
     }//GEN-LAST:event_salirMenuItemActionPerformed
     
     public void procesar(List<String> lineasArchivo) {
 
-        //La complejidad ciclomatica mi­nima.
-        this.valorCC = 1;
-        //Listado de palabras que representan un salto en el curso de decision.
-        String keywords[] = {"if", "else", "case", "default", "for", "while", "catch", "throw"};
-        String condiciones[] = {"&&", "||"};
-        int cantidad;
-        
-        for (String linea : lineasArchivo) {
-            if (linea.matches(".*\\W*(if|else|case|default|while|for|catch|throw)\\W.*")) {
-            	for(String palabra : keywords) {
-		        	cantidad = (linea.length() - linea.replace(palabra, "").length()) / palabra.length();
-		        	if(cantidad > 0) {
-		        		valorCC += cantidad;
-		        	}
-            	}
-            }
-            
-            if (linea.matches(".*(&&|\\|\\|).*")) {
-            	for(String simbolo : condiciones) {
-            		cantidad = (linea.length() - linea.replace(simbolo, "").length()) / simbolo.length();
-		        	if(cantidad > 0) {
-		        		valorCC += cantidad;
-		        	}
-            	}
-            }
-        }
 }
 	public static void main(String args[])
 	{

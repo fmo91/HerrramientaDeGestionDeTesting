@@ -4,16 +4,35 @@ import com.herramienta.model.CodeMetric;
 
 public class CommentedLinesInspectionService extends CodeInspectionService {
 
+	private boolean mIsInCommentMode = false;
+	private int mNumberOfCommentedLines = 0;
+	
 	@Override
-	void analyzeLine(String codeLine) {
-		// TODO Auto-generated method stub
+	public void analyzeLine(String codeLine) {
+		
+		if (codeLine.contains("/*")) {
+			this.mIsInCommentMode = true;
+		}
+		
+		if (this.mIsInCommentMode) {
+			this.mNumberOfCommentedLines++;
+		} else if (codeLine.contains("//")) {
+			this.mNumberOfCommentedLines++;
+		}
+		
+		if (codeLine.contains("*/")) {
+			this.mIsInCommentMode = false;
+		}
 		
 	}
 
 	@Override
-	CodeMetric getMetric() {
+	public CodeMetric getMetric() {
 		// TODO Auto-generated method stub
-		return null;
+		CodeMetric m = new CodeMetric();
+		m.setName("Cantidad de líneas comentadas");
+		m.setValue(String.valueOf(this.mNumberOfCommentedLines));
+		return m;
 	}
 
 }
