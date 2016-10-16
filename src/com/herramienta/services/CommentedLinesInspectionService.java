@@ -7,6 +7,10 @@ public class CommentedLinesInspectionService extends CodeInspectionService {
 	private boolean mIsInCommentMode = false;
 	private int mNumberOfCommentedLines = 0;
 	
+	public boolean isInCommentMode() {
+		return this.mIsInCommentMode;
+	}
+	
 	@Override
 	public void analyzeLine(String codeLine) {
 		

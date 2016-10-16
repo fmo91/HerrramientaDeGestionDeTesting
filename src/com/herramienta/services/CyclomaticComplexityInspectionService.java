@@ -13,8 +13,6 @@ public class CyclomaticComplexityInspectionService extends CodeInspectionService
 	// Methods
 	@Override
 	public void analyzeLine(String codeLine) {
-		// TODO Auto-generated method stub
-
         //La complejidad ciclomatica mi­nima.
         this.valorCC = 1;
         //Listado de palabras que representan un salto en el curso de decision.
@@ -43,7 +41,6 @@ public class CyclomaticComplexityInspectionService extends CodeInspectionService
 
 	@Override
 	public CodeMetric getMetric() {
-		// TODO Auto-generated method stub
 		CodeMetric m = new CodeMetric();
 		m.setName("Complejidad ciclomática");
 		m.setValue(String.valueOf(valorCC));

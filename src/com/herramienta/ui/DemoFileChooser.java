@@ -5,10 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
-import org.omg.PortableServer.Servant;
 
 import com.herramienta.core.MiFiltroArchivo;
 import com.herramienta.model.CodeMetric;
@@ -16,16 +17,32 @@ import com.herramienta.services.CodeInspectionService;
 import com.herramienta.services.CodeLinesNumberInspectionService;
 import com.herramienta.services.CommentedLinesInspectionService;
 import com.herramienta.services.CyclomaticComplexityInspectionService;
+import com.herramienta.services.FanInInspectionService;
+import com.herramienta.services.FanOutInspectionService;
 import com.herramienta.services.HalsteadInspectionService;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.herramienta.utils.MethodFinder;
 
 
 
 @SuppressWarnings("serial")
 public class DemoFileChooser extends javax.swing.JFrame {
 
+	// ATTRIBUTES -
+	private List<CodeInspectionService> servicios;
+	private MethodFinder methodFinder;
+	private File archFile;
+	
+    private javax.swing.JButton SalirButton;
+    private javax.swing.JButton abrirArchivoButton;
+    private javax.swing.JMenuItem abrirMenuItem;
+    private javax.swing.JTextArea editorTextArea;
+    private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JMenuItem salirMenuItem;
+	
 	/**
 	 * Creates new form DemoFileChooser
 	 */
@@ -33,23 +50,23 @@ public class DemoFileChooser extends javax.swing.JFrame {
 	{
 		setTitle("Testing Tool");
 		initComponents();
-		
-		archivoAbierto = false;
 	}
 
-	private List<CodeInspectionService> servicios;
+	/**
+	 * Initializes all components in the class
+	 * */
 	private void initComponents() {
 
-        fileChooser = new javax.swing.JFileChooser();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        editorTextArea = new javax.swing.JTextArea();
-        jToolBar1 = new javax.swing.JToolBar();
-        abrirArchivoButton = new javax.swing.JButton();
-        SalirButton = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        abrirMenuItem = new javax.swing.JMenuItem();
-        salirMenuItem = new javax.swing.JMenuItem();
+        fileChooser			= new javax.swing.JFileChooser();
+        jScrollPane1 		= new javax.swing.JScrollPane();
+        editorTextArea 		= new javax.swing.JTextArea();
+        jToolBar1 			= new javax.swing.JToolBar();
+        abrirArchivoButton 	= new javax.swing.JButton();
+        SalirButton 		= new javax.swing.JButton();
+        jMenuBar1 			= new javax.swing.JMenuBar();
+        jMenu1 				= new javax.swing.JMenu();
+        abrirMenuItem 		= new javax.swing.JMenuItem();
+        salirMenuItem 		= new javax.swing.JMenuItem();
 
 
         fileChooser.setFileFilter(new MiFiltroArchivo());
@@ -133,7 +150,9 @@ public class DemoFileChooser extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void abrirMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_abrirMenuItemActionPerformed
+
+	// EVENT LISTENERS -
+    private void abrirMenuItemActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-HEADEREND:event_abrirMenuItemActionPerformed
         int ret = fileChooser.showOpenDialog(this);
 		
@@ -169,26 +188,34 @@ public class DemoFileChooser extends javax.swing.JFrame {
 			this.servicios.add(new CommentedLinesInspectionService());
 			this.servicios.add(new CyclomaticComplexityInspectionService());
 			this.servicios.add(new HalsteadInspectionService());
+			this.servicios.add(new FanInInspectionService());
+			this.servicios.add(new FanOutInspectionService());
 
 			String line;
 			BufferedReader br = new BufferedReader(fr);
 		    
-			while ((line = br.readLine()) != null) {
-		    	   for(CodeInspectionService servicio : this.servicios) {
-		    		   servicio.analyzeLine(line);
-		    	   }
-		       }
+			this.methodFinder = new MethodFinder();
 			
-		       StringBuffer sb = new StringBuffer();
-		       for (CodeInspectionService servicio : servicios) {
-		    	   CodeMetric metrica = servicio.getMetric();
-		    	   sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
-		       }
-		       editorTextArea.setText(sb.toString());
+			while ((line = br.readLine()) != null) {
+				for(CodeInspectionService servicio : this.servicios) {
+					servicio.analyzeLine(line);
+				}
+				
+				this.methodFinder.processLine(line);
+				
+			}
 
+			StringBuffer sb = new StringBuffer();
+			for (CodeInspectionService servicio : servicios) {
+				CodeMetric metrica = servicio.getMetric();
+				//sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
+			}
+			editorTextArea.setText(sb.toString());
+
+			System.out.println("Encontramos un metodo! => \n" 
+					+ this.methodFinder.getMethods().get(0));
 
 			fr.close();
-			archivoAbierto = true;
 		}
 		catch(IOException ex)
 		{
@@ -204,30 +231,14 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		
 		
     }//GEN-LAST:event_abrirMenuItemActionPerformed
-
-    private CodeInspectionService CyclomaticComplexityInspectionService() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private CodeInspectionService CommentedLinesInspectionService() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private CodeInspectionService CodeLinesNumberInspectionService() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private void salirMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_salirMenuItemActionPerformed
+	private void salirMenuItemActionPerformed(java.awt.event.ActionEvent evt)
     {//GEN-HEADEREND:event_salirMenuItemActionPerformed
 		System.exit(0);
     }//GEN-LAST:event_salirMenuItemActionPerformed
-    
-    public void procesar(List<String> lineasArchivo) {
 
-}
+	/**
+	 * Main method
+	 * */
 	public static void main(String args[])
 	{
 		try
@@ -266,16 +277,4 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		});
 	}
 	
-	private File archFile;
-	private boolean archivoAbierto;
-    private javax.swing.JButton SalirButton;
-    private javax.swing.JButton abrirArchivoButton;
-    private javax.swing.JMenuItem abrirMenuItem;
-    private javax.swing.JTextArea editorTextArea;
-    private javax.swing.JFileChooser fileChooser;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JMenuItem salirMenuItem;
 }

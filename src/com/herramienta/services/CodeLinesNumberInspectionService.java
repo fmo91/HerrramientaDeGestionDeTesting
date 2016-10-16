@@ -5,12 +5,19 @@ import com.herramienta.model.CodeMetric;
 public class CodeLinesNumberInspectionService extends CodeInspectionService {
 	
 	private int mNumberOfLines = 0;
-	
-	private CommentedLinesInspectionService commentedLinesInspectionService = new CommentedLinesInspectionService(); 
 
 	@Override
 	public void analyzeLine(String codeLine) {
 		// TODO Auto-generated method stub
+		String trimmedCodeLine = codeLine.trim();
+		
+		boolean codeLineHasContents = !trimmedCodeLine.isEmpty();
+		boolean codeLineIsInlineComment = trimmedCodeLine.startsWith("//");
+		
+		if(codeLineHasContents && !codeLineIsInlineComment) {
+			
+		}
+ 		
 		this.mNumberOfLines++;
 		
 	}
