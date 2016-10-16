@@ -6,13 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.herramienta.core.MiFiltroArchivo;
 import com.herramienta.model.CodeMetric;
+import com.herramienta.model.Method;
 import com.herramienta.services.CodeInspectionService;
 import com.herramienta.services.CodeLinesNumberInspectionService;
 import com.herramienta.services.CommentedLinesInspectionService;
@@ -90,6 +94,7 @@ public class DemoFileChooser extends javax.swing.JFrame {
                 abrirMenuItemActionPerformed(evt);
             }
         });
+        
         jToolBar1.add(abrirArchivoButton);
 
         SalirButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("./salir grande.png"))); // NOI18N
@@ -150,6 +155,56 @@ public class DemoFileChooser extends javax.swing.JFrame {
         );
         
         this.methodsList = new JList<String>();
+        
+        this.methodsList.addListSelectionListener(new ListSelectionListener() {
+			
+        	// Esta funcion se va a ejecutar cada vez que se cambie el estado
+        	// de seleccion de la list.
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int selectedIndex = methodsList.getSelectedIndex();
+				
+				if (selectedIndex == -1) {
+					// Si es -1, es porque no hay nada seleccionado
+					return;
+				}
+				
+				// En este caso ya sabemos que hay algo que esta 
+				// seleccionado, de modo que podemos obtener el metodo seleccionado!
+				Method selectedMethod = methodFinder.getMethods().get(selectedIndex);
+				System.out.println("EL metodo seleccionado es => " + selectedMethod);
+				
+
+				servicios = new ArrayList<CodeInspectionService>();
+				
+				// Agregamos todos los servicios que necesitamos para analizar el codigo.
+				// Cada vez que el programa pase por una linea, la enviará
+				// a todos los servicios que esten registrados.
+				// Los servicios entonces van a procesar esa linea y van a registrar
+				// los resultados en un objeto CodeMetric.
+				servicios.add(new CodeLinesNumberInspectionService());
+				servicios.add(new CommentedLinesInspectionService());
+				servicios.add(new CyclomaticComplexityInspectionService());
+				servicios.add(new HalsteadInspectionService());
+				
+				Iterator<String> methodLinesIterator = selectedMethod.getLines().iterator();
+				while(methodLinesIterator.hasNext()) {
+					String line = methodLinesIterator.next();
+					for (CodeInspectionService servicio : servicios) {
+						servicio.analyzeLine(line);
+					}
+				}
+				
+				StringBuffer sb = new StringBuffer();
+				for (CodeInspectionService servicio : servicios) {
+					CodeMetric metrica = servicio.getMetric();
+					sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
+				}
+				editorTextArea.setText(sb.toString());
+				
+			}
+		});
+        
         jScrollPane1.setColumnHeaderView(methodsList);
 
         pack();
@@ -181,47 +236,16 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		
 		try
 		{
-			
-			this.servicios = new ArrayList<CodeInspectionService>();
-			
-			// Agregamos todos los servicios que necesitamos para analizar el codigo.
-			// Cada vez que el programa pase por una linea, la enviará
-			// a todos los servicios que esten registrados.
-			// Los servicios entonces van a procesar esa linea y van a registrar
-			// los resultados en un objeto CodeMetric.
-			this.servicios.add(new CodeLinesNumberInspectionService());
-			this.servicios.add(new CommentedLinesInspectionService());
-			this.servicios.add(new CyclomaticComplexityInspectionService());
-			this.servicios.add(new HalsteadInspectionService());
-			this.servicios.add(new FanInInspectionService());
-			this.servicios.add(new FanOutInspectionService());
-
 			String line;
 			BufferedReader br = new BufferedReader(fr);
 		    
 			this.methodFinder = new MethodFinder();
 			
 			while ((line = br.readLine()) != null) {
-				for(CodeInspectionService servicio : this.servicios) {
-					servicio.analyzeLine(line);
-				}
-				
 				this.methodFinder.processLine(line);
-				
 			}
-
-			StringBuffer sb = new StringBuffer();
-			for (CodeInspectionService servicio : servicios) {
-				CodeMetric metrica = servicio.getMetric();
-				//sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
-			}
-			editorTextArea.setText(sb.toString());
-			 
+			
 			this.methodsList.setListData(this.methodFinder.getMethodsNamesList());
-
-			System.out.println("Encontramos un metodo! => \n" 
-					+ this.methodFinder.getMethods().get(0));
-
 			fr.close();
 		}
 		catch(IOException ex)
