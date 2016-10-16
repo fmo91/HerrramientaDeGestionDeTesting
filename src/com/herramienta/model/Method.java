@@ -3,7 +3,7 @@ package com.herramienta.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Method {
+public class Method extends BaseModel {
 	// Attributes
 	private String mName;
 	private ArrayList<String> mLines;

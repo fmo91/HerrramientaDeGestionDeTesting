@@ -21,6 +21,7 @@ import com.herramienta.services.FanInInspectionService;
 import com.herramienta.services.FanOutInspectionService;
 import com.herramienta.services.HalsteadInspectionService;
 import com.herramienta.utils.MethodFinder;
+import javax.swing.JList;
 
 
 
@@ -42,6 +43,7 @@ public class DemoFileChooser extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem salirMenuItem;
+    private javax.swing.JList<String> methodsList; 
 	
 	/**
 	 * Creates new form DemoFileChooser
@@ -146,6 +148,9 @@ public class DemoFileChooser extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addContainerGap())
         );
+        
+        this.methodsList = new JList<String>();
+        jScrollPane1.setColumnHeaderView(methodsList);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -211,6 +216,8 @@ public class DemoFileChooser extends javax.swing.JFrame {
 				//sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
 			}
 			editorTextArea.setText(sb.toString());
+			 
+			this.methodsList.setListData(this.methodFinder.getMethodsNamesList());
 
 			System.out.println("Encontramos un metodo! => \n" 
 					+ this.methodFinder.getMethods().get(0));
@@ -276,5 +283,4 @@ public class DemoFileChooser extends javax.swing.JFrame {
 			}
 		});
 	}
-	
 }

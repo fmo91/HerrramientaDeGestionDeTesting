@@ -1,6 +1,7 @@
 package com.herramienta.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,6 +70,33 @@ public class MethodFinder {
 	
 	public ArrayList<Method> getMethods() {
 		return this.methods;
+	}
+	
+	public String[] getMethodsNamesList() {
+		ArrayList<String> methodsNamesList = new ArrayList<String>();
+		Iterator<Method> methodsIterator = this.methods.iterator();
+
+		/*
+		 * List<String> stockList = new ArrayList<String>();
+			stockList.add("stock1");
+			stockList.add("stock2");
+			
+			String[] stockArr = new String[stockList.size()];
+			stockArr = stockList.toArray(stockArr);
+			
+			for(String s : stockArr)
+			    System.out.println(s);
+		 */
+		
+		while(methodsIterator.hasNext()) {
+			Method m = methodsIterator.next();
+			methodsNamesList.add(m.getName());
+		}
+		
+		String[] methodsNamesArray = new String[methodsNamesList.size()];
+		methodsNamesArray = methodsNamesList.toArray(methodsNamesArray);
+		
+		return methodsNamesArray;
 	}
 	
 }
