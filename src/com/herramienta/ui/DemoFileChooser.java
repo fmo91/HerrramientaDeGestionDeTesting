@@ -26,6 +26,10 @@ import com.herramienta.services.FanOutInspectionService;
 import com.herramienta.services.HalsteadInspectionService;
 import com.herramienta.utils.MethodFinder;
 import javax.swing.JList;
+import javax.swing.JTextArea;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 
 
@@ -48,6 +52,7 @@ public class DemoFileChooser extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem salirMenuItem;
     private javax.swing.JList<String> methodsList; 
+    private javax.swing.JTextArea codeTextArea;
 	
 	/**
 	 * Creates new form DemoFileChooser
@@ -133,26 +138,31 @@ public class DemoFileChooser extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
+        
+        codeTextArea = new JTextArea();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
-                .addContainerGap())
+        	layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(codeTextArea, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+        				.addComponent(jToolBar1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+        				.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+        			.addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                .addContainerGap())
+        	layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addComponent(jToolBar1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(codeTextArea, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
         );
+        getContentPane().setLayout(layout);
         
         this.methodsList = new JList<String>();
         
@@ -201,6 +211,10 @@ public class DemoFileChooser extends javax.swing.JFrame {
 					sb.append(metrica.getName() + ": " + metrica.getValue() + "\n");
 				}
 				editorTextArea.setText(sb.toString());
+				
+				// Imprimimos el codigo en pantalla
+				// para mostrar el metodo que estamos analizando.
+				codeTextArea.setText(selectedMethod.toString());
 				
 			}
 		});
