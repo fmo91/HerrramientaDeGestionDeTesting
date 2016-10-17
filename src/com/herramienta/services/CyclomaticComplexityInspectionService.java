@@ -2,7 +2,7 @@ package com.herramienta.services;
 
 import com.herramienta.model.CodeMetric;
 
-public class CyclomaticComplexityInspectionService extends CodeInspectionService {
+public class CyclomaticComplexityInspectionService extends UncommentedCodeInspectionService {
 
 	// Atributes
 	private int valorCC = 0;
@@ -12,7 +12,7 @@ public class CyclomaticComplexityInspectionService extends CodeInspectionService
 	
 	// Methods
 	@Override
-	public void analyzeLine(String codeLine) {
+	public void analyzeUncommentedLine(String codeLine) {
         //La complejidad ciclomatica mi­nima.
         this.valorCC = 1;
         //Listado de palabras que representan un salto en el curso de decision.

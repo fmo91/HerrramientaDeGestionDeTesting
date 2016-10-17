@@ -49,8 +49,6 @@ public class MethodFinder {
 			
 			// Matcheo, lo que significa que se encontró un nuevo metodo.
 			Method method = new Method(m.group(0).replaceAll("\\{", "").replaceAll("\\}", ""));
-
-			System.out.println("Encontramos un metodo!" + method.getName());
 			
 			methods.add(method);
 			this.currentMethod = method;
@@ -76,18 +74,6 @@ public class MethodFinder {
 		ArrayList<String> methodsNamesList = new ArrayList<String>();
 		Iterator<Method> methodsIterator = this.methods.iterator();
 
-		/*
-		 * List<String> stockList = new ArrayList<String>();
-			stockList.add("stock1");
-			stockList.add("stock2");
-			
-			String[] stockArr = new String[stockList.size()];
-			stockArr = stockList.toArray(stockArr);
-			
-			for(String s : stockArr)
-			    System.out.println(s);
-		 */
-		
 		while(methodsIterator.hasNext()) {
 			Method m = methodsIterator.next();
 			methodsNamesList.add(m.getName());

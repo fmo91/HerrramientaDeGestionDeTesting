@@ -148,8 +148,8 @@ public class DemoFileChooser extends javax.swing.JFrame {
         			.addContainerGap()
         			.addGroup(layout.createParallelGroup(Alignment.LEADING)
         				.addComponent(codeTextArea, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-        				.addComponent(jToolBar1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-        				.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+        				.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+        				.addComponent(jToolBar1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
         			.addContainerGap())
         );
         layout.setVerticalGroup(
@@ -157,9 +157,9 @@ public class DemoFileChooser extends javax.swing.JFrame {
         		.addGroup(layout.createSequentialGroup()
         			.addComponent(jToolBar1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(codeTextArea, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+        			.addGap(18)
+        			.addComponent(codeTextArea, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
         );
         getContentPane().setLayout(layout);
@@ -192,10 +192,29 @@ public class DemoFileChooser extends javax.swing.JFrame {
 				// a todos los servicios que esten registrados.
 				// Los servicios entonces van a procesar esa linea y van a registrar
 				// los resultados en un objeto CodeMetric.
+				
+				// Con este servicio contamos las lineas de codigo.
 				servicios.add(new CodeLinesNumberInspectionService());
+				
+				// Contamos las lineas comentadas
 				servicios.add(new CommentedLinesInspectionService());
+				
+				// Contamos la complejidad ciclomatica
 				servicios.add(new CyclomaticComplexityInspectionService());
+				
+				// Contamos Halstead (?) quizas esto tengamos que separarlo en 
+				// otros servicios mas pequeños, porque hay varias metricas de halstead
 				servicios.add(new HalsteadInspectionService());
+				
+				// Contamos el Fan In del metodo seleccionado
+				// Fan in es la cantidad de veces que ese metodo
+				// es invocado desde afuera
+				servicios.add(new FanInInspectionService(methodFinder.getMethods(), selectedMethod));
+				
+				// Contamos el Fan Out del metodo seleccionado
+				// Fan out es la cantidad de veces que el metodo seleccionado
+				// llama a otros metodos.
+				servicios.add(new FanOutInspectionService(methodFinder.getMethods(), selectedMethod));
 				
 				Iterator<String> methodLinesIterator = selectedMethod.getLines().iterator();
 				while(methodLinesIterator.hasNext()) {
