@@ -32,8 +32,27 @@ public class Method extends BaseModel {
 	// Por ejemplo, si el metodo es public ArrayList<String> getLines(),
 	// entonces este metodo devolverá getLines
 	public String getMainName() {
-		// TODO: Terminar este metodo
-		return mName;
+		
+		// Por ejemplo, si tenemos -> public int sumar (int a, int b)
+		String[] nameParts = mName	
+				
+				// Partimos por el parentesis que se abre y nos quedamos con la primera parte
+				// en este caso, nos queda -> "public int sumar " 
+				.split("\\(")[0]
+						
+				// Le sacamos los espacios en blanco del principio y del final, nos queda
+				// -> "public int sumar"
+				.trim()
+				
+				// Lo separamos por espacios en blanco
+				// y nos queda ["public", "int", "sumar"]
+				.split(" ");
+		
+		// Nos quedamos con la ultima parte, es decir -> "sumar",
+		// y eso es el nombre
+		String name = nameParts[nameParts.length - 1]; 
+		
+		return name;
 	}
 	
 	// Public methods
@@ -51,6 +70,8 @@ public class Method extends BaseModel {
 		// acumulador.
 		int numberOfCalls = 0;
 
+		System.out.println("Empezamos a contar la cantidad de llamadas al metodo: " + method.getMainName());
+		
 		// Itero por todas las lineas del metodo
 		Iterator<String> linesIterator = mLines.iterator();
 		while (linesIterator.hasNext()) {
@@ -60,6 +81,7 @@ public class Method extends BaseModel {
 			// pasado por parametro, sumo 1 a la cantidad
 			// de llamadas.
 			if (line.contains(method.getMainName())) {
+				System.out.println("La linea contiene el metodo! La linea es => " + line);
 				numberOfCalls++;
 			}
 		}

@@ -48,6 +48,7 @@ public abstract class UncommentedCodeInspectionService extends CodeInspectionSer
 					this.currentState = State.MultilineComment;
 				} else {
 					// En este caso, se trataba de una operacion de division.
+					uncommentedLine += '/';
 					uncommentedLine += c;
 				}
 				break;

@@ -6,7 +6,7 @@ import java.util.Iterator;
 import com.herramienta.model.CodeMetric;
 import com.herramienta.model.Method;
 
-public class FanInInspectionService extends CodeInspectionService  {
+public class FanInInspectionService extends UncommentedCodeInspectionService  {
 
 	// Atributos
 	
@@ -29,7 +29,7 @@ public class FanInInspectionService extends CodeInspectionService  {
 	// Metodos de inspeccion de codigo
 	
 	@Override
-	public void analyzeLine(String codeLine) {
+	public void analyzeUncommentedLine(String codeLine) {
 		// No hace nada por cada linea...
 	}
 
@@ -38,13 +38,17 @@ public class FanInInspectionService extends CodeInspectionService  {
 		CodeMetric m = new CodeMetric();
 		m.setName("Fan In");
 		
+		/* Acumulamos la cantidad de llamadas que sea hacen al metodo
+		 * desde afuera. */
 		int fanIn = 0;
 		
 		Iterator<Method> iterator = methods.iterator();
 		while(iterator.hasNext()) {
 			Method method = iterator.next();
 			
-			fanIn += method.getNumberOfCallsToMethod(this.inspectionedMethod);
+			if (method != inspectionedMethod) {
+				fanIn += method.getNumberOfCallsToMethod(this.inspectionedMethod);
+			}
 		}
 		
 		m.setValue(String.valueOf(fanIn));

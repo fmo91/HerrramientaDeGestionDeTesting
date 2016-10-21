@@ -182,9 +182,7 @@ public class DemoFileChooser extends javax.swing.JFrame {
 				// En este caso ya sabemos que hay algo que esta 
 				// seleccionado, de modo que podemos obtener el metodo seleccionado!
 				Method selectedMethod = methodFinder.getMethods().get(selectedIndex);
-				System.out.println("EL metodo seleccionado es => " + selectedMethod);
 				
-
 				servicios = new ArrayList<CodeInspectionService>();
 				
 				// Agregamos todos los servicios que necesitamos para analizar el codigo.

@@ -5,7 +5,7 @@ import com.herramienta.model.CodeMetric;
 public class CyclomaticComplexityInspectionService extends UncommentedCodeInspectionService {
 
 	// Atributes
-	private int valorCC = 0;
+	private int valorCC = 1;
 	
 	// Constructor
 	public CyclomaticComplexityInspectionService() { }
@@ -13,8 +13,6 @@ public class CyclomaticComplexityInspectionService extends UncommentedCodeInspec
 	// Methods
 	@Override
 	public void analyzeUncommentedLine(String codeLine) {
-        //La complejidad ciclomatica mi­nima.
-        this.valorCC = 1;
         //Listado de palabras que representan un salto en el curso de decision.
         String keywords[] = {"if", "else", "case", "default", "for", "while", "catch", "throw"};
         String condiciones[] = {"&&", "||"};
@@ -37,7 +35,7 @@ public class CyclomaticComplexityInspectionService extends UncommentedCodeInspec
 	        	}
         	}
         }
-	}
+	}	
 
 	@Override
 	public CodeMetric getMetric() {
