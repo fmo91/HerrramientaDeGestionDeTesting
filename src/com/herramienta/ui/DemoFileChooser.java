@@ -326,15 +326,12 @@ public class DemoFileChooser extends javax.swing.JFrame {
 		{
 			java.util.logging.Logger.getLogger(DemoFileChooser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
-		java.awt.EventQueue.invokeLater(new Runnable()
-		{
-			public void run()
-			{
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
 				DemoFileChooser fchooser = new DemoFileChooser();
 				fchooser.setBounds(100, 100, 700, 500);
 				fchooser.editorTextArea.setEnabled(false);
 				fchooser.setVisible(true);
-				
 			}
 		});
 	}
